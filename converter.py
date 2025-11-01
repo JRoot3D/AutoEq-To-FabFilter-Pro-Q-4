@@ -288,6 +288,8 @@ if __name__ == '__main__':
             for preset_name, preset_path in converted_presets:
                 path_str = str(preset_path).replace('\\', '/')
                 path_str = path_str.replace(' ', '%20')
+                path_str = path_str.replace('(', '%28')
+                path_str = path_str.replace(')', '%29')
                 f.write(f'- [{preset_name}](./{path_str})\n')
 
         print(f"✓ Generated README.md with {len(converted_presets)} presets")
