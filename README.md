@@ -9,4 +9,4 @@ Source for presets is [AutoEq](https://autoeq.app/) repository
 - Drag it to FabFilter Pro-Q 4
 - Enjoy!
 
-[Presets List](./presets)
+[Presets List](./presets/README.md)
