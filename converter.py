@@ -274,12 +274,9 @@ if __name__ == '__main__':
             failed_count += 1
 
     # Generate README.md
-    readme_path = Path('README.md')
+    readme_path = output_dir_path / Path('README.md')
     try:
         with open(readme_path, 'w', encoding='utf-8') as f:
-            f.write('# AutoEQ to FabFilter Pro-Q 4 Presets\n\n')
-            f.write(f'This repository contains {converted_count} converted EQ presets for FabFilter Pro-Q 4.\n\n')
-            f.write(f'Source for presets is repository [AutoEq](https://autoeq.app/)\n\n')
             f.write('## Preset List\n\n')
 
             # Sort presets by name
@@ -290,7 +287,8 @@ if __name__ == '__main__':
                 path_str = path_str.replace(' ', '%20')
                 path_str = path_str.replace('(', '%28')
                 path_str = path_str.replace(')', '%29')
-                f.write(f'- [{preset_name}](./{path_str})\n')
+                path_str = path_str.replace('presets', '')
+                f.write(f'- [{preset_name}](.{path_str})\n')
 
         print(f"✓ Generated README.md with {len(converted_presets)} presets")
         print()
