@@ -238,14 +238,18 @@ if __name__ == '__main__':
     # Convert each file
     converted_count = 0
     failed_count = 0
+    converted_presets = []
 
     for input_file in parametric_eq_files:
         try:
             with open(input_file, 'r', encoding='utf-8') as f:
                 input_text = f.read()
 
+            relative_path = input_file.relative_to(work_dir_path)
             output_filename = input_file.stem.replace(' ParametricEQ', '') + '.ffp'
-            output_file = output_dir_path / output_filename
+            output_file = output_dir_path / relative_path.parent / output_filename
+
+            output_file.parent.mkdir(parents=True, exist_ok=True)
 
             device_name = input_file.parent.name
 
@@ -257,11 +261,39 @@ if __name__ == '__main__':
             )
 
             converted_count += 1
+
+            # Store preset info for README
+            preset_name = output_filename.replace('.ffp', '')
+            preset_path = output_file.parent
+            converted_presets.append((preset_name, preset_path))
+
             print()
 
         except Exception as e:
             print(f"✗ Failed to convert {input_file}: {str(e)}\n")
             failed_count += 1
+
+    # Generate README.md
+    readme_path = Path('README.md')
+    try:
+        with open(readme_path, 'w', encoding='utf-8') as f:
+            f.write('# AutoEQ to FabFilter Pro-Q 4 Presets\n\n')
+            f.write(f'This repository contains {converted_count} converted EQ presets for FabFilter Pro-Q 4.\n\n')
+            f.write(f'Source for presets is repository [AutoEq](https://autoeq.app/)\n\n')
+            f.write('## Preset List\n\n')
+
+            # Sort presets by name
+            converted_presets.sort(key=lambda x: x[0].lower())
+
+            for preset_name, preset_path in converted_presets:
+                path_str = str(preset_path).replace('\\', '/')
+                path_str = path_str.replace(' ', '%20')
+                f.write(f'- [{preset_name}](./{path_str})\n')
+
+        print(f"✓ Generated README.md with {len(converted_presets)} presets")
+        print()
+    except Exception as e:
+        print(f"✗ Failed to generate README.md: {str(e)}\n")
 
     # Summary
     print("=" * 60)
